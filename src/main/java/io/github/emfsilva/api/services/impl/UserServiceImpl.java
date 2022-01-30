@@ -1,9 +1,11 @@
 package io.github.emfsilva.api.services.impl;
 
 import io.github.emfsilva.api.domain.User;
+import io.github.emfsilva.api.domain.dto.UserDTO;
 import io.github.emfsilva.api.repositories.UserRepository;
 import io.github.emfsilva.api.services.UserService;
 import io.github.emfsilva.api.services.exceptions.ObjectNotFoundException;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,12 +16,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService
 {
 
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final ModelMapper mapper;
+
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
-
+    public UserServiceImpl(UserRepository userRepository, ModelMapper mapper) {
         this.userRepository = userRepository;
+        this.mapper = mapper;
     }
 
     @Override
@@ -31,5 +35,10 @@ public class UserServiceImpl implements UserService
     @Override
     public List<User> findAll() {
      return userRepository.findAll();
+    }
+
+    @Override
+    public User create(UserDTO obj) {
+        return userRepository.save(mapper.map(obj, User.class));
     }
 }
