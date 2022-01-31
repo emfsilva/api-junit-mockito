@@ -1,6 +1,5 @@
 package io.github.emfsilva.api.controller;
 
-
 import io.github.emfsilva.api.domain.dto.UserDTO;
 import io.github.emfsilva.api.services.UserService;
 import org.modelmapper.ModelMapper;
@@ -44,5 +43,11 @@ public class UserController {
                 .path("/{id}")
                 .buildAndExpand(userService.create(obj).getId()).toUri();
         return ResponseEntity.created(uri).build();
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO obj) {
+        obj.setId(id);
+        return ResponseEntity.ok().body(mapper.map(userService.update(obj), UserDTO.class));
     }
 }
