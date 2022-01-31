@@ -15,6 +15,8 @@ import java.util.List;
 @RequestMapping(value = "/user")
 public class UserController {
 
+    public static final String ID = "/{id}";
+
     private final UserService userService;
 
     private final ModelMapper mapper;
@@ -25,7 +27,7 @@ public class UserController {
         this.mapper = mapper;
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = ID)
     public ResponseEntity<UserDTO> findById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(mapper.map(userService.findById(id), UserDTO.class));
     }
@@ -40,14 +42,20 @@ public class UserController {
     public ResponseEntity<UserDTO> create(@RequestBody UserDTO obj) {
         URI uri = ServletUriComponentsBuilder
                 .fromCurrentRequest()
-                .path("/{id}")
+                .path(ID)
                 .buildAndExpand(userService.create(obj).getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = ID)
     public ResponseEntity<UserDTO> update(@PathVariable Integer id, @RequestBody UserDTO obj) {
         obj.setId(id);
         return ResponseEntity.ok().body(mapper.map(userService.update(obj), UserDTO.class));
+    }
+
+    @DeleteMapping(value = ID)
+    public ResponseEntity<UserDTO> delete(@PathVariable Integer id) {
+        userService.delete(id);
+        return  ResponseEntity.noContent().build();
     }
 }
