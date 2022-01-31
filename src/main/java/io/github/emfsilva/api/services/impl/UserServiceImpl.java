@@ -4,6 +4,7 @@ import io.github.emfsilva.api.domain.User;
 import io.github.emfsilva.api.domain.dto.UserDTO;
 import io.github.emfsilva.api.repositories.UserRepository;
 import io.github.emfsilva.api.services.UserService;
+import io.github.emfsilva.api.services.exceptions.DataIntegrityViolationException;
 import io.github.emfsilva.api.services.exceptions.ObjectNotFoundException;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,14 @@ public class UserServiceImpl implements UserService
 
     @Override
     public User create(UserDTO obj) {
+        findByEmail(obj);
         return userRepository.save(mapper.map(obj, User.class));
     }
+
+    private void findByEmail(UserDTO obj) {
+        Optional<User> user = userRepository.findByEmail(obj.getEmail());
+            if(user.isPresent()) {
+                throw new DataIntegrityViolationException("E-mail exist");
+            }
+     }
 }
