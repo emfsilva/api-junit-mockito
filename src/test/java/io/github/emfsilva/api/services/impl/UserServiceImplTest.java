@@ -28,6 +28,7 @@ class UserServiceImplTest {
     public static final String PASSWORD = "123";
     public static final String USER_NOT_FOUND = "User not found";
     public static final int INDEX = 0;
+    public static final String E_MAIL_EXIST = "E-mail exist";
 
     @InjectMocks
     private UserServiceImpl service;
@@ -109,12 +110,12 @@ class UserServiceImplTest {
             service.create(userDTO);
         }catch (Exception ex) {
             assertEquals(DataIntegrityViolationException.class, ex.getClass());
-            assertEquals("E-mail exist", ex.getMessage());
+            assertEquals(E_MAIL_EXIST, ex.getMessage());
         }
     }
 
     @Test
-    void whenUpdatehenReturnSuccess() {
+    void whenUpdateThenReturnSuccess() {
         when(repository.save(any())).thenReturn(user);
 
         User response = service.update(userDTO);
@@ -125,6 +126,20 @@ class UserServiceImplTest {
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
         assertEquals(PASSWORD, response.getPassword());
+    }
+
+
+    @Test
+    void whenUpdateThenReturnDataIntegrityViolationException() {
+        when(repository.findByEmail(anyString())).thenReturn(userOptinal);
+
+        try {
+            userOptinal.get().setId(2);
+            service.create(userDTO);
+        }catch (Exception ex) {
+            assertEquals(DataIntegrityViolationException.class, ex.getClass());
+            assertEquals(E_MAIL_EXIST, ex.getMessage());
+        }
     }
 
 
