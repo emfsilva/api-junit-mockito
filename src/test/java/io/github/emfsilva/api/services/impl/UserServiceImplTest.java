@@ -3,6 +3,7 @@ package io.github.emfsilva.api.services.impl;
 import io.github.emfsilva.api.domain.User;
 import io.github.emfsilva.api.domain.dto.UserDTO;
 import io.github.emfsilva.api.repositories.UserRepository;
+import io.github.emfsilva.api.services.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -54,6 +55,18 @@ class UserServiceImplTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
+    }
+
+    @Test
+    void WhenFindByIdThenReturnAnObjectNotFoundException() {
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("User not found"));
+
+        try{
+            service.findById(ID);
+        }catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("User not found", ex.getMessage());
+        }
     }
 
     @Test
