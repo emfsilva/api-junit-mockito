@@ -17,9 +17,9 @@ public class UserController {
 
     public static final String ID = "/{id}";
 
-    private final UserService userService;
+    private UserService userService;
 
-    private final ModelMapper mapper;
+    private ModelMapper mapper;
 
     @Autowired
     public UserController(UserService userService, ModelMapper mapper) {
