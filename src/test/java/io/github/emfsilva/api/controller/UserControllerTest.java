@@ -65,6 +65,11 @@ class UserControllerTest {
     }
 
     @Test
+    void whenFindByIdThenReturnNotFoundException() {
+        when(service.findById(anyInt())).thenReturn(user);
+    }
+
+    @Test
     void findAll() {
     }
 
